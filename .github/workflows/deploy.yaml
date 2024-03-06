@@ -1,0 +1,29 @@
+name: Simple deployments exemple
+
+on:
+    push:
+        branches:
+            - master  # Branch to deploy based on push
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest  # Actions docker image for run deployments step
+
+        steps:
+            -   name: Setup SSH connection
+                uses: webfactory/ssh-agent@v0.5.3
+                with:
+                    ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+            -   name: Deploy to Server
+                run: |
+                    ssh -o StrictHostKeyChecking=no -l ${{ secrets.SSH_USER }} ${{ secrets.SERVER_IP }} << 'EOF'
+                      cd /var/www/app
+                      sudo chmod -R 777 /var/www/app/
+                      sudo chown -R {{ secrets.SSH_USER }} /var/www/app/
+                      git reset --hard
+                      git pull origin master
+                      sudo chmod -R 775 /var/www/app/
+                      sudo chown -R {{ secrets.SSH_USER }} /var/www/app/
+                      sudo docker compose up -d --build
+                    EOF

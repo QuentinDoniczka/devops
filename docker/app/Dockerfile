@@ -8,5 +8,6 @@ RUN apk update && apk add curl
 
 RUN npm install && npm run build
 
+
 EXPOSE 3000
 CMD ["node", "app.js"]

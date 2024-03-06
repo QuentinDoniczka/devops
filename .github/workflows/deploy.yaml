@@ -4,7 +4,7 @@ name: Simple deployments exemple
 on:
     push:
         branches:
-            - master  # Branch to deploy based on push
+            - main  # Branch to deploy based on push
 
 jobs:
     deploy:
@@ -23,7 +23,7 @@ jobs:
                       sudo chmod -R 777 /var/www/app/
                       sudo chown -R {{ secrets.SSH_USER }} /var/www/app/
                       git reset --hard
-                      git pull origin master
+                      git pull origin main
                       sudo chmod -R 775 /var/www/app/
                       sudo chown -R {{ secrets.SSH_USER }} /var/www/app/
                       sudo docker compose up -d --build
